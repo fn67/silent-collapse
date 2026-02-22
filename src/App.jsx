@@ -15,18 +15,30 @@ function App() {
   const [endType, setEndType] = useState(null)
   const audioRef = useRef(null)
 
-  // Initialize audio once on mount
+  // Initialize audio and attempt autoplay on mount
   useEffect(() => {
-    audioRef.current = new Audio("/music.mp3")
-    audioRef.current.loop = true
-    audioRef.current.volume = 0.5
+    const audio = new Audio("/music.mp3")
+    audio.loop = true
+    audio.volume = 0.5
+    audioRef.current = audio
+
+    // Attempt to play immediately
+    const playPromise = audio.play()
+
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Autoplay was blocked - add one-time click listener
+        const startMusic = () => {
+          audio.play()
+          document.removeEventListener("click", startMusic)
+        }
+        document.addEventListener("click", startMusic)
+      })
+    }
   }, [])
 
-  // onPlay: start audio and begin game
+  // onPlay: begin game (music already playing or starts on this click)
   const handlePlay = () => {
-    if (audioRef.current) {
-      audioRef.current.play()
-    }
     setScreen("game")
   }
 
