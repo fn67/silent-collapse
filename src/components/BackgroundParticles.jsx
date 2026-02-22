@@ -1,11 +1,12 @@
+import { useCallback } from "react"
 import Particles from "react-tsparticles"
 import { loadFull } from "tsparticles"
 import particleConfig from "../config/particleConfig"
 
 export default function BackgroundParticles() {
-  const particlesInit = async (main) => {
-    await loadFull(main)
-  }
+  const particlesInit = useCallback(async (engine) => {
+    await loadFull(engine)
+  }, [])
 
   return (
     <Particles
