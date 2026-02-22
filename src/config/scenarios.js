@@ -51,6 +51,20 @@ export const SCENARIOS = [
     id: 10,
     text: "Feedback from the club is left unheard.",
   },
+    {
+    id: 11,
+    text: "A member's personal struggle is noticed but left unaddressed.",
+  },
+   {
+    id: 12,
+    text: "A new member feels invisible in group discussions.",
+  },
+    {
+    id: 13,
+    text: "Someone's repeated contributions go unacknowledged.",
+  },
+  
+
 ];
 
 // Inaction Phrases (random selection)
@@ -81,10 +95,16 @@ export const ACTION_PHRASES = [
   "The universe steadies.",
 ];
 
-// End Screen Strings
-export const COLLAPSE_TEXT =
-  "Universes don't collapse loudly.\nThey fade quietly.";
+// End Screen Strings - Collapse
+export const COLLAPSE_TITLE = "THE UNIVERSE HAS COLLAPSED";
 
+export const COLLAPSE_BODY = `You had the chance to act.
+You chose silence.
+And silence collapses everything.
+The universe didn’t end with a bang -
+it faded, quietly.`;
+
+// End Screen Strings - Success
 export const SUCCESS_TEXT =
   "The universe survives because someone chose to act.";
 
@@ -92,7 +112,7 @@ export const SUCCESS_TEXT =
 export const BUTTON_LABELS = {
   play: "PLAY",
   about: "ABOUT",
-  takeAction: "Take Action to Resolve This",
+  takeAction: "Take Action",
   doNothing: "Do Nothing",
   retry: "RETRY",
   quit: "QUIT",
