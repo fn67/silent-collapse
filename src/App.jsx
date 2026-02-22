@@ -4,6 +4,7 @@ import './App.css'
 import BackgroundParticles from './components/BackgroundParticles'
 import RedOverlay from './components/RedOverlay'
 import HomeScreen from './components/HomeScreen'
+import AboutScreen from './components/AboutScreen'
 import GameScreen from './components/GameScreen'
 import EndScreen from './components/EndScreen'
 
@@ -40,6 +41,16 @@ function App() {
   // onPlay: begin game (music already playing or starts on this click)
   const handlePlay = () => {
     setScreen("game")
+  }
+
+  // onAbout: navigate to about screen
+  const handleAbout = () => {
+    setScreen("about")
+  }
+
+  // onBack: return to home from about screen
+  const handleBack = () => {
+    setScreen("home")
   }
 
   // onInaction: increment inaction count (never decreases)
@@ -89,7 +100,11 @@ function App() {
 
       {/* Conditional screen rendering */}
       {screen === "home" && (
-        <HomeScreen onPlay={handlePlay} />
+        <HomeScreen onPlay={handlePlay} onAbout={handleAbout} />
+      )}
+
+      {screen === "about" && (
+        <AboutScreen onBack={handleBack} />
       )}
 
       {screen === "game" && (

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { HOME_CONTENT, BUTTON_LABELS } from "../config/scenarios"
 
-export default function HomeScreen({ onPlay }) {
+export default function HomeScreen({ onPlay, onAbout }) {
   return (
     <motion.div
       className="screen"
@@ -9,7 +9,10 @@ export default function HomeScreen({ onPlay }) {
       animate={{ opacity: 1 }}
       transition={{ duration: 2, ease: "easeInOut" }}
     >
+      <div className="title-wrapper">
       <h1 className="title">{HOME_CONTENT.title}</h1>
+      <p className="game-subtitle">BY CLUB 18</p>
+      </div>
 
       <p className="tagline mt-3" style={{ whiteSpace: "pre-line" }}>
         {HOME_CONTENT.tagline}
@@ -23,7 +26,7 @@ export default function HomeScreen({ onPlay }) {
         <button onClick={onPlay}>
           {BUTTON_LABELS.play}
         </button>
-        <button>
+        <button onClick={onAbout}>
           {BUTTON_LABELS.about}
         </button>
       </div>
