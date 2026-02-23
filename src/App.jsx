@@ -58,15 +58,15 @@ function App() {
     setInactionCount((prev) => prev + 1)
   }
 
-  // onAction: no state change in App (red overlay does NOT reduce)
+  // onAction: decrement inaction count during recovery phase (minimum 0)
   const handleAction = () => {
-    // Intentionally empty - action does not affect inactionCount
+    setInactionCount((prev) => Math.max(0, prev - 1))
   }
 
-  // onCollapse: game ends in collapse
+  // onCollapse: collapse is now handled inside GameScreen (recovery phase)
+  // This callback exists but does nothing — GameScreen manages recovery internally
   const handleCollapse = () => {
-    setEndType("collapse")
-    setScreen("end")
+    // Intentionally empty — recovery phase is handled inside GameScreen
   }
 
   // onSuccess: game ends in success
