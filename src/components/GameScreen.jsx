@@ -24,7 +24,7 @@ export default function GameScreen({
   onAction,
   onSuccess,
 }) {
-  // Game phase: "intro" | "scenario" | "transition" | "collapse" | "recovery" | "recovery-scenario"
+  // Game phase: "intro" | "scenario" | "transition" | "collapse" | "recovery-scenario"
   const [gamePhase, setGamePhase] = useState("intro")
   const [introIndex, setIntroIndex] = useState(0)
   const [scenarioIndex, setScenarioIndex] = useState(0)
@@ -32,8 +32,15 @@ export default function GameScreen({
   const [phraseVisible, setPhraseVisible] = useState(false)
 
   // Recovery phase state
+  // missedScenarios: persistent array of scenario objects user chose "Do Nothing" on
+  // This array only shrinks when scenarios are resolved with "Take Action" in recovery
+  // It only grows when "Do Nothing" is clicked during normal play
   const [missedScenarios, setMissedScenarios] = useState([])
+
+  // recoveryIndex: current position in missedScenarios during recovery
+  // Cycles through missedScenarios until all are resolved
   const [recoveryIndex, setRecoveryIndex] = useState(0)
+
   const [currentPillar, setCurrentPillar] = useState(null)
 
   // Track the latest inactionCount for use in async handlers
@@ -42,7 +49,10 @@ export default function GameScreen({
     inactionCountRef.current = inactionCount
   }, [inactionCount])
 
-  // Update currentPillar when scenario changes
+  // Get current recovery scenario
+  const currentRecoveryScenario = missedScenarios[recoveryIndex]
+
+  // Update currentPillar when scenario changes (normal play)
   useEffect(() => {
     if (gamePhase === "scenario" && SCENARIOS[scenarioIndex]) {
       setCurrentPillar(SCENARIOS[scenarioIndex].pillar)
@@ -51,10 +61,10 @@ export default function GameScreen({
 
   // Update currentPillar when recovery scenario changes
   useEffect(() => {
-    if (gamePhase === "recovery-scenario" && missedScenarios[recoveryIndex]) {
-      setCurrentPillar(missedScenarios[recoveryIndex].pillar)
+    if (gamePhase === "recovery-scenario" && currentRecoveryScenario) {
+      setCurrentPillar(currentRecoveryScenario.pillar)
     }
-  }, [gamePhase, recoveryIndex, missedScenarios])
+  }, [gamePhase, currentRecoveryScenario])
 
   // Intro sequence effect
   useEffect(() => {
@@ -82,42 +92,28 @@ export default function GameScreen({
 
   // Handle "Do Nothing" click during NORMAL PLAY
   const handleDoNothing = async () => {
-    // 1. Set gamePhase to "transition"
     setGamePhase("transition")
-
-    // 2. Wait 1.5s
     await delay(1500)
 
-    // 3. Call onInaction()
+    // Increment inactionCount (only during normal play)
     onInaction()
 
-    // 4. Add current scenario to missedScenarios
+    // Add current scenario to missedScenarios
     const currentScenario = SCENARIOS[scenarioIndex]
     setMissedScenarios((prev) => [...prev, currentScenario])
 
-    // 5. Pick random phrase from INACTION_PHRASES
     const phrase = getRandomPhrase(INACTION_PHRASES, currentPhrase)
     setCurrentPhrase(phrase)
-
-    // 6. Fade in the phrase
     setPhraseVisible(true)
-
-    // 7. Wait 2s (plus fade in time)
     await delay(1500 + 2000)
-
-    // 8. Fade out the phrase
     setPhraseVisible(false)
-
-    // 9. Wait 1.5s
     await delay(1500)
 
-    // 10. Check if collapse (use ref for latest value after increment)
     const newInactionCount = inactionCountRef.current
     if (newInactionCount >= MAX_INACTIONS) {
-      // Trigger collapse → recovery phase (NOT EndScreen)
+      // Trigger collapse → recovery phase
       setGamePhase("collapse")
     } else {
-      // Advance scenarioIndex and set gamePhase to "scenario"
       setScenarioIndex((prev) => prev + 1)
       setGamePhase("scenario")
     }
@@ -125,36 +121,21 @@ export default function GameScreen({
 
   // Handle "Take Action" click during NORMAL PLAY
   const handleTakeAction = async () => {
-    // 1. Set gamePhase to "transition"
     setGamePhase("transition")
-
-    // 2. Wait 1s
     await delay(1000)
 
-    // Note: onAction does nothing during normal play (red overlay doesn't reduce)
-    // We don't call onAction() here - it's only for recovery phase
+    // Note: onAction not called during normal play - red overlay doesn't reduce
 
-    // 3. Pick random phrase from ACTION_PHRASES
     const phrase = getRandomPhrase(ACTION_PHRASES, currentPhrase)
     setCurrentPhrase(phrase)
-
-    // 4. Fade in the phrase
     setPhraseVisible(true)
-
-    // 5. Wait 2s (plus fade in time)
     await delay(1500 + 2000)
-
-    // 6. Fade out the phrase
     setPhraseVisible(false)
-
-    // 7. Wait 1s
     await delay(1500)
 
-    // 8. Check if success
     if (scenarioIndex + 1 >= SCENARIOS.length) {
       onSuccess()
     } else {
-      // 9. Advance scenarioIndex and set gamePhase to "scenario"
       setScenarioIndex((prev) => prev + 1)
       setGamePhase("scenario")
     }
@@ -168,52 +149,34 @@ export default function GameScreen({
 
   // Handle "Take Action" click during RECOVERY PHASE
   const handleRecoveryTakeAction = async () => {
-    // 1. Set gamePhase to "transition"
     setGamePhase("transition")
-
-    // 2. Wait 1s
     await delay(1000)
 
-    // 3. Call onAction() → decrements inactionCount by 1 in App
+    // Decrement inactionCount (only action that reduces the overlay)
     onAction()
 
-    // 4. Pick random phrase from RECOVERY_ACTION_PHRASES
     const phrase = getRandomPhrase(RECOVERY_ACTION_PHRASES, currentPhrase)
     setCurrentPhrase(phrase)
-
-    // 5. Fade in the phrase
     setPhraseVisible(true)
-
-    // 6. Wait 2s (plus fade in time)
     await delay(1500 + 2000)
-
-    // 7. Fade out the phrase
     setPhraseVisible(false)
-
-    // 8. Wait 1s
     await delay(1500)
 
-    // 9. Remove this scenario from missedScenarios
-    const resolvedScenarioId = missedScenarios[recoveryIndex].id
-    const updatedMissedScenarios = missedScenarios.filter(
-      (s) => s.id !== resolvedScenarioId
-    )
+    // Remove resolved scenario from missedScenarios
+    const resolvedId = currentRecoveryScenario.id
+    const updatedMissedScenarios = missedScenarios.filter(s => s.id !== resolvedId)
     setMissedScenarios(updatedMissedScenarios)
 
-    // 10. Check if all missed scenarios resolved
+    // Check if all scenarios resolved
     if (updatedMissedScenarios.length === 0) {
-      // All resolved - show success message and resume normal play
+      // ALL scenarios resolved - show full recovery message
       setCurrentPhrase(RECOVERY_SUCCESS)
       setPhraseVisible(true)
-
       await delay(1500 + 2000)
-
       setPhraseVisible(false)
-
       await delay(1500)
 
-      // Resume normal play from where we left off
-      // Advance to next scenario since we were on scenarioIndex when collapse happened
+      // Resume normal play
       if (scenarioIndex + 1 >= SCENARIOS.length) {
         onSuccess()
       } else {
@@ -221,63 +184,43 @@ export default function GameScreen({
         setGamePhase("scenario")
       }
     } else {
-      // More scenarios to resolve - show next one
-      // Since we removed the current one, recoveryIndex now points to next (or we keep it at 0 if needed)
-      setRecoveryIndex(0) // Always start from beginning of remaining list
+      // More scenarios to resolve - adjust index if needed and continue
+      // After removing an item, if recoveryIndex >= new length, wrap to 0
+      if (recoveryIndex >= updatedMissedScenarios.length) {
+        setRecoveryIndex(0)
+      }
+      // Otherwise keep the same index (next item shifted into current position)
       setGamePhase("recovery-scenario")
     }
   }
 
   // Handle "Do Nothing" click during RECOVERY PHASE
   const handleRecoveryDoNothing = async () => {
-    // 1. Set gamePhase to "transition"
     setGamePhase("transition")
-
-    // 2. Wait 1.5s
     await delay(1500)
 
-    // 3. Call onInaction() → increments inactionCount by 1
-    onInaction()
+    // DO NOT increment inactionCount during recovery
+    // The scenario stays in missedScenarios, it will come around again
 
-    // 4. Keep this scenario in missedScenarios (not resolved)
-
-    // 5. Pick random phrase from INACTION_PHRASES
     const phrase = getRandomPhrase(INACTION_PHRASES, currentPhrase)
     setCurrentPhrase(phrase)
-
-    // 6. Fade in the phrase
     setPhraseVisible(true)
-
-    // 7. Wait 2s (plus fade in time)
     await delay(1500 + 2000)
-
-    // 8. Fade out the phrase
     setPhraseVisible(false)
-
-    // 9. Wait 1.5s
     await delay(1500)
 
-    // 10. Check if collapse again
-    const newInactionCount = inactionCountRef.current
-    if (newInactionCount >= MAX_INACTIONS) {
-      // Collapse again → show collapse screen again
-      setGamePhase("collapse")
+    // Advance to next scenario in the loop (with wrap-around)
+    const nextIndex = recoveryIndex + 1
+    if (nextIndex >= missedScenarios.length) {
+      setRecoveryIndex(0) // Loop back to start
     } else {
-      // Advance to next missed scenario
-      const nextIndex = recoveryIndex + 1
-      if (nextIndex >= missedScenarios.length) {
-        // Loop back to first missed scenario
-        setRecoveryIndex(0)
-      } else {
-        setRecoveryIndex(nextIndex)
-      }
-      setGamePhase("recovery-scenario")
+      setRecoveryIndex(nextIndex)
     }
+    setGamePhase("recovery-scenario")
   }
 
-  // Get current scenario for display
+  // Get current scenario for display (normal play)
   const currentScenario = SCENARIOS[scenarioIndex]
-  const currentRecoveryScenario = missedScenarios[recoveryIndex]
 
   return (
     <div className="screen">
@@ -369,7 +312,7 @@ export default function GameScreen({
       {/* Recovery Scenario Phase */}
       {gamePhase === "recovery-scenario" && currentRecoveryScenario && (
         <motion.div
-          key={`recovery-${recoveryIndex}-${currentRecoveryScenario.id}`}
+          key={`recovery-${currentRecoveryScenario.id}-${recoveryIndex}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5, ease: "easeInOut" }}
