@@ -126,7 +126,7 @@ export const RECOVERY_SUCCESS =
 // Button Labels
 export const BUTTON_LABELS = {
   play: "PLAY",
-  about: "ABOUT",
+  about: "Before You Begin ",
   takeAction: "Take Action",
   doNothing: "Do Nothing",
   recover: "RESTORE THE UNIVERSE",
@@ -139,7 +139,7 @@ export const HOME_CONTENT = {
   title: "SILENT COLLAPSE",
   subtitle: "by Club 18",
   tagline: "Universes don't collapse loudly.\nThey fade quietly.",
-  subtext: "A scenario-based interactive experience.\nNo big brains. Just choices.",
+  subtext: "A scenario-based interactive experience.",
 };
 
 // Random Phrase Selection Helper

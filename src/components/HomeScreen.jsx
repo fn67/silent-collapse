@@ -14,6 +14,7 @@ export default function HomeScreen({ onPlay, onAbout }) {
       <p className="game-subtitle">BY CLUB 18</p>
       </div>
 
+
       <p className="tagline mt-3" style={{ whiteSpace: "pre-line" }}>
         {HOME_CONTENT.tagline}
       </p>
