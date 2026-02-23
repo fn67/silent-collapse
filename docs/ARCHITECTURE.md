@@ -215,7 +215,7 @@ Size: approximately 48x48px — subtle, not dominant.
 While `gamePhase === "scenario"`:
 - Display scenario text from `SCENARIOS[scenarioIndex]`
 - Display pillar logo with pulse animation
-- Show two buttons: "Take Action to Resolve This" | "Do Nothing"
+- Show two buttons: "Take Action" | "Do Nothing"
 - Buttons disabled during transitions (`gamePhase === "transition"`)
 
 ### On "Do Nothing" Click (Normal Play)
@@ -274,7 +274,7 @@ During recovery phase:
 - Display missed scenarios one by one from missedScenarios array
 - Display pillar logo for each missed scenario (same as normal play)
 - Show label: "RECOVERY MODE" or subtle indicator at top
-- Same two buttons: "Take Action to Resolve This" | "Do Nothing"
+- Same two buttons: "Take Action | "Do Nothing"
 
 ### On "Take Action" Click (Recovery Phase)
 

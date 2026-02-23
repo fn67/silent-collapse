@@ -249,7 +249,7 @@ export default function GameScreen({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5, ease: "easeInOut" }}
-          style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+          style={{ display: "flex", flexDirection: "column", alignItems: "center" , }}
         >
           {/* Pillar Logo */}
           {currentPillar && (
@@ -259,7 +259,7 @@ export default function GameScreen({
               className="pillar-logo"
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              style={{ width: 48, height: 48, marginBottom: "2rem" }}
+              style={{ width: 96, height: 96, marginBottom: "3rem" }}
             />
           )}
 
@@ -322,7 +322,7 @@ export default function GameScreen({
           <p
             className="recovery-label"
             style={{
-              fontSize: "0.75rem",
+              fontSize: "1rem",
               letterSpacing: "0.2em",
               opacity: 0.5,
               marginBottom: "2rem",
@@ -339,7 +339,7 @@ export default function GameScreen({
               className="pillar-logo"
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              style={{ width: 48, height: 48, marginBottom: "2rem" }}
+              style={{ width: 96, height: 96, marginBottom: "2rem" }}
             />
           )}
 

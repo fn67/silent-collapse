@@ -187,7 +187,7 @@ export const RECOVERY_SUCCESS =
 export const BUTTON_LABELS = {
   play: "PLAY",
   about: "ABOUT",
-  takeAction: "Take Action to Resolve This",
+  takeAction: "Take Action",
   doNothing: "Do Nothing",
   recover: "REBUILD THE UNIVERSE",
   retry: "RETRY",

@@ -108,7 +108,7 @@ button:disabled {
 .scenario-text {
   font-size: 1.2rem;
   font-weight: normal;
-  letter-spacing: 0.05em;
+  /* letter-spacing: 0.05em; */
 }
 
 .phrase-text {
