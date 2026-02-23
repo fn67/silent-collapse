@@ -141,7 +141,7 @@ export default function GameScreen({
     }
   }
 
-  // Handle "REBUILD THE UNIVERSE" button click
+  // Handle "RESTORE THE UNIVERSE" button click
   const handleStartRecovery = () => {
     setRecoveryIndex(0)
     setGamePhase("recovery-scenario")
