@@ -1,10 +1,11 @@
-# CLAUDE.md — Silent Collapse: Master Briefing
+# CLAUDE.md — Silent Collapse: Master Briefing (Updated)
 
 ## What This Project Is
 
 Silent Collapse is a minimal, scenario-based interactive web experience built in React.
 It is NOT a game. It is a psychological interaction model about the consequences of inaction.
 The central metaphor: universes don't collapse loudly — they fade quietly.
+But a universe that collapses can be rebuilt — if you choose to confront every silence.
 
 Read all files in /docs before writing any code.
 
@@ -12,9 +13,9 @@ Read all files in /docs before writing any code.
 
 ## Required Reading Order
 
-1. `/docs/ARCHITECTURE.md` — component tree, state logic, screen flow. Read before writing any components.
+1. `/docs/ARCHITECTURE.md` — component tree, state logic, screen flow, recovery phase. Read before writing any components.
 2. `/docs/DESIGN.md` — visual rules, colors, animation specs. Read before writing any CSS or styles.
-3. `/docs/SCENARIOS.md` — all content: scenario text, phrase pools, config values. Read before hardcoding any strings.
+3. `/docs/SCENARIOS.md` — all content: scenario text, pillar mappings, phrase pools, config values. Read before hardcoding any strings.
 4. `/docs/PHILOSOPHY.md` — the "why" behind design decisions. Read before making any judgment calls.
 
 ---
@@ -22,7 +23,7 @@ Read all files in /docs before writing any code.
 ## Tech Stack
 
 - React (Vite)
-- react-tsparticles — particle background only
+- @tsparticles/react@2.12.0 + tsparticles@2.12.0 (use these exact versions — other versions have compatibility issues)
 - Framer Motion — fades and transitions only
 - HTML5 Audio API — background music
 - Plain CSS — no UI framework, no Tailwind, no styled-components
@@ -37,10 +38,11 @@ Read all files in /docs before writing any code.
     BackgroundParticles.jsx
     RedOverlay.jsx
     HomeScreen.jsx
+    AboutScreen.jsx
     GameScreen.jsx
     EndScreen.jsx
   /config
-    scenarios.js        ← all scenario text and phrase pools live here
+    scenarios.js        ← all scenario text, pillar mappings, and phrase pools live here
     particleConfig.js   ← tsparticles config object
   App.jsx
   App.css
@@ -52,7 +54,11 @@ Read all files in /docs before writing any code.
   SCENARIOS.md
   PHILOSOPHY.md
 /public
-  music.mp3            ← background audio file (user will provide)
+  music.mp3
+  leadership.svg
+  innovation.svg
+  credibility.svg
+  togetherness.svg
 ```
 
 ---
@@ -61,14 +67,30 @@ Read all files in /docs before writing any code.
 
 1. **No UI frameworks.** No Tailwind, no MUI, no Chakra. Plain CSS only.
 2. **No routing libraries.** Screen state is managed with a single `screen` variable in App.jsx.
-3. **inactionCount never decreases.** Ever. Not on retry, not on action. Only reset to 0 on full restart.
-4. **No recovery mechanic.** Taking action does not reduce the red overlay.
-5. **Music never stops.** Audio persists across all screen transitions.
-6. **No colors other than black, white, and deep crimson.** See DESIGN.md for exact values.
-7. **All scenario text and phrases live in /config/scenarios.js only.** Never hardcode strings in components.
-8. **No heavy animations.** No bouncing, no scaling effects, no particle counts above 60.
-9. **Phrase selection must be random** from the pool each time — no sequential order.
-10. **Do not add features not listed in these docs** without being explicitly asked.
+3. **inactionCount never decreases during normal play.** Only decreases during recovery phase when user clicks "Take Action" on a missed scenario.
+4. **Red overlay only reduces during recovery phase.** Taking action during normal play never reduces the overlay. Ever.
+5. **Full recovery resets inactionCount to 0.** Only when all missed scenarios are resolved with "Take Action" in recovery phase.
+6. **Music never stops.** Audio persists across all screen transitions including recovery phase.
+7. **No colors other than black, white, and deep crimson.** See DESIGN.md for exact values.
+8. **All scenario text, pillar mappings, and phrases live in /config/scenarios.js only.** Never hardcode strings in components.
+9. **No heavy animations.** No bouncing, no scaling effects, no particle counts above 60.
+10. **Phrase selection must be random** from the pool each time — no sequential order.
+11. **Each scenario has a pillar.** Every scenario must display its pillar SVG logo when it appears.
+12. **Pillar SVGs live in /public.** Reference them as `/leadership.svg`, `/innovation.svg`, `/credibility.svg`, `/togetherness.svg`.
+13. **Do not add features not listed in these docs** without being explicitly asked.
+
+---
+
+## Game Phases Overview
+
+```
+normal play → collapse → recovery phase → normal play (resumed)
+                ↑                              |
+                └──────────────────────────────┘
+                     (can repeat indefinitely)
+```
+
+Full details in ARCHITECTURE.md.
 
 ---
 
@@ -79,7 +101,8 @@ Build in this order:
 2. BackgroundParticles component
 3. RedOverlay component
 4. HomeScreen
-5. GameScreen (intro sequence first, then scenario loop)
-6. EndScreen (collapse state + success state)
+5. AboutScreen
+6. GameScreen (intro → normal play → collapse → recovery phase)
+7. EndScreen (success state only — collapse now triggers recovery, not end screen)
 
 Test each component before moving to the next.
