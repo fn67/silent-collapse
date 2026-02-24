@@ -167,11 +167,11 @@ export default function GameScreen({
   }, [gamePhase, introIndex, musicRef])
 
   // Play voiceover for RECOVERY_PROMPT when collapse phase starts
-  useEffect(() => {
-    if (gamePhase === "collapse" && RECOVERY_PROMPT?.audio) {
-      playVoiceover(RECOVERY_PROMPT.audio, musicRef, currentVoiceoverRef)
-    }
-  }, [gamePhase, musicRef])
+  // useEffect(() => {
+  //   if (gamePhase === "collapse" && RECOVERY_PROMPT?.audio) {
+  //     playVoiceover(RECOVERY_PROMPT.audio, musicRef, currentVoiceoverRef)
+  //   }
+  // }, [gamePhase, musicRef])
 
   // Handle "Do Nothing" click during NORMAL PLAY
   const handleDoNothing = async () => {
