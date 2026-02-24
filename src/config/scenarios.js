@@ -115,8 +115,9 @@ export const BUTTON_LABELS = {
 
 // Home Screen Strings
 export const HOME_CONTENT = {
-  title: "SILENT COLLAPSE",
-  subtitle: "by Club 18",
+  title: "CLUBVERSE18",
+  subtitle: "TOGETHER WE THRIVE",
+  credit: "By Club 18",
   tagline: "Universes don't collapse loudly.\nThey fade quietly.",
   subtext: "A scenario-based interactive experience.",
 };
