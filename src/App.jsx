@@ -114,6 +114,7 @@ function App() {
           onAction={handleAction}
           onCollapse={handleCollapse}
           onSuccess={handleSuccess}
+          musicRef={audioRef}
         />
       )}
 

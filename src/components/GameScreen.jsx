@@ -11,6 +11,7 @@ import {
   PILLARS,
   COLLAPSE_TITLE,
   COLLAPSE_BODY,
+  RECOVERY_PROMPT,
   RECOVERY_SUCCESS,
   getRandomPhrase,
 } from "../config/scenarios"
@@ -18,11 +19,77 @@ import {
 // Helper for async delays
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+// Helper for smooth volume transitions
+const fadeVolume = (audio, targetVolume, duration) => {
+  return new Promise((resolve) => {
+    const steps = 20
+    const stepTime = duration / steps
+    const volumeStep = (targetVolume - audio.volume) / steps
+    let currentStep = 0
+    const interval = setInterval(() => {
+      currentStep++
+      audio.volume = Math.min(1, Math.max(0, audio.volume + volumeStep))
+      if (currentStep >= steps || Math.abs(audio.volume - targetVolume) < 0.01) {
+        audio.volume = targetVolume
+        clearInterval(interval)
+        resolve()
+      }
+    }, stepTime)
+  })
+}
+
+// Voiceover playback with music ducking
+const playVoiceover = (audioPath, musicRef, currentVoiceoverRef) => {
+  return new Promise((resolve) => {
+    // Stop any previous voiceover
+    if (currentVoiceoverRef.current) {
+      currentVoiceoverRef.current.pause()
+      currentVoiceoverRef.current.currentTime = 0
+      currentVoiceoverRef.current = null
+    }
+
+    // Create new voiceover audio
+    const voiceover = new Audio(audioPath)
+    voiceover.volume = 0.8
+    currentVoiceoverRef.current = voiceover
+
+    // Duck music volume
+    if (musicRef?.current) {
+      fadeVolume(musicRef.current, 0.15, 300)
+    }
+
+    // Play voiceover
+    voiceover.play().catch(() => {
+      // If playback fails, resolve immediately
+      resolve()
+    })
+
+    // When voiceover ends, restore music and resolve
+    voiceover.onended = () => {
+      if (musicRef?.current) {
+        fadeVolume(musicRef.current, 0.5, 500)
+      }
+      currentVoiceoverRef.current = null
+      resolve()
+    }
+
+    // Also handle error case
+    voiceover.onerror = () => {
+      if (musicRef?.current) {
+        fadeVolume(musicRef.current, 0.5, 500)
+      }
+      currentVoiceoverRef.current = null
+      resolve()
+    }
+  })
+}
+
 export default function GameScreen({
   inactionCount,
   onInaction,
   onAction,
   onSuccess,
+  musicRef,
 }) {
   // Game phase: "intro" | "scenario" | "transition" | "collapse" | "recovery-scenario"
   const [gamePhase, setGamePhase] = useState("intro")
@@ -49,6 +116,9 @@ export default function GameScreen({
     inactionCountRef.current = inactionCount
   }, [inactionCount])
 
+  // Track current voiceover to stop it if a new one starts
+  const currentVoiceoverRef = useRef(null)
+
   // Get current recovery scenario
   const currentRecoveryScenario = missedScenarios[recoveryIndex]
 
@@ -72,6 +142,12 @@ export default function GameScreen({
 
     setPhraseVisible(true)
 
+    // Play voiceover for intro phrase at the same time as fade in
+    const introPhrase = INTRO_PHRASES[introIndex]
+    if (introPhrase?.audio) {
+      playVoiceover(introPhrase.audio, musicRef, currentVoiceoverRef)
+    }
+
     const holdTimer = setTimeout(() => {
       setPhraseVisible(false)
     }, 2500)
@@ -88,7 +164,14 @@ export default function GameScreen({
       clearTimeout(holdTimer)
       clearTimeout(nextTimer)
     }
-  }, [gamePhase, introIndex])
+  }, [gamePhase, introIndex, musicRef])
+
+  // Play voiceover for RECOVERY_PROMPT when collapse phase starts
+  useEffect(() => {
+    if (gamePhase === "collapse" && RECOVERY_PROMPT?.audio) {
+      playVoiceover(RECOVERY_PROMPT.audio, musicRef, currentVoiceoverRef)
+    }
+  }, [gamePhase, musicRef])
 
   // Handle "Do Nothing" click during NORMAL PLAY
   const handleDoNothing = async () => {
@@ -105,6 +188,12 @@ export default function GameScreen({
     const phrase = getRandomPhrase(INACTION_PHRASES, currentPhrase)
     setCurrentPhrase(phrase)
     setPhraseVisible(true)
+
+    // Play voiceover at the same time as fade in
+    if (phrase?.audio) {
+      playVoiceover(phrase.audio, musicRef, currentVoiceoverRef)
+    }
+
     await delay(1500 + 2000)
     setPhraseVisible(false)
     await delay(1500)
@@ -129,6 +218,12 @@ export default function GameScreen({
     const phrase = getRandomPhrase(ACTION_PHRASES, currentPhrase)
     setCurrentPhrase(phrase)
     setPhraseVisible(true)
+
+    // Play voiceover at the same time as fade in
+    if (phrase?.audio) {
+      playVoiceover(phrase.audio, musicRef, currentVoiceoverRef)
+    }
+
     await delay(1500 + 2000)
     setPhraseVisible(false)
     await delay(1500)
@@ -158,6 +253,12 @@ export default function GameScreen({
     const phrase = getRandomPhrase(RECOVERY_ACTION_PHRASES, currentPhrase)
     setCurrentPhrase(phrase)
     setPhraseVisible(true)
+
+    // Play voiceover at the same time as fade in
+    if (phrase?.audio) {
+      playVoiceover(phrase.audio, musicRef, currentVoiceoverRef)
+    }
+
     await delay(1500 + 2000)
     setPhraseVisible(false)
     await delay(1500)
@@ -172,6 +273,12 @@ export default function GameScreen({
       // ALL scenarios resolved - show full recovery message
       setCurrentPhrase(RECOVERY_SUCCESS)
       setPhraseVisible(true)
+
+      // Play RECOVERY_SUCCESS voiceover
+      if (RECOVERY_SUCCESS?.audio) {
+        playVoiceover(RECOVERY_SUCCESS.audio, musicRef, currentVoiceoverRef)
+      }
+
       await delay(1500 + 2000)
       setPhraseVisible(false)
       await delay(1500)
@@ -205,6 +312,12 @@ export default function GameScreen({
     const phrase = getRandomPhrase(INACTION_PHRASES, currentPhrase)
     setCurrentPhrase(phrase)
     setPhraseVisible(true)
+
+    // Play voiceover at the same time as fade in
+    if (phrase?.audio) {
+      playVoiceover(phrase.audio, musicRef, currentVoiceoverRef)
+    }
+
     await delay(1500 + 2000)
     setPhraseVisible(false)
     await delay(1500)
@@ -236,7 +349,7 @@ export default function GameScreen({
               exit={{ opacity: 0 }}
               transition={{ duration: 1.5, ease: "easeInOut" }}
             >
-              {INTRO_PHRASES[introIndex]}
+              {INTRO_PHRASES[introIndex].text}
             </motion.p>
           )}
         </AnimatePresence>
@@ -369,14 +482,14 @@ export default function GameScreen({
         <AnimatePresence mode="wait">
           {phraseVisible && currentPhrase && (
             <motion.p
-              key={currentPhrase}
+              key={currentPhrase.text}
               className="phrase-text"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1.5, ease: "easeInOut" }}
             >
-              {currentPhrase}
+              {currentPhrase.text}
             </motion.p>
           )}
         </AnimatePresence>
