@@ -14,7 +14,7 @@ export const PILLARS = {
 export const INTRO_PHRASES = [
   { text: "Every universe begins with balance.", audio: "/audio/intro/every-universe-begins.mp3" },
   { text: "Every collapse begins with silence.", audio: "/audio/intro/every-collapse-begins.mp3" },
-  { text: "Try not to let it fade.", audio: "/audio/intro/try-not-to-let-it-fade.mp3" },
+  { text: "Try not to let it fade.", audio: "/audio/intro/trynot.mp3" },
 ];
 
 // Scenarios (shown in order, no shuffling)
@@ -65,16 +65,16 @@ export const SCENARIOS = [
 
 // Inaction Phrases (random selection)
 export const INACTION_PHRASES = [
-  { text: "Inaction is also a decision.", audio: "/audio/inaction/inaction-is-a-decision.mp3" },
-  { text: "Silence grows roots.", audio: "/audio/inaction/silence-grows-roots.mp3" },
-  { text: "Neglect compounds quietly.", audio: "/audio/inaction/neglect-compounds-quietly.mp3" },
-  { text: "Balance shifts unnoticed.", audio: "/audio/inaction/balance-shifts-unnoticed.mp3" },
-  { text: "Small fractures widen.", audio: "/audio/inaction/small-fractures-widen.mp3" },
-  { text: "Nothing changes - until everything does.", audio: "/audio/inaction/nothing-changes.mp3" },
-  { text: "The fade has begun.", audio: "/audio/inaction/the-fade-has-begun.mp3" },
-  { text: "Quiet choices echo longest.", audio: "/audio/inaction/quiet-choices-echo.mp3" },
-  { text: "Stillness can be decay.", audio: "/audio/inaction/stillness-can-be-decay.mp3" },
-  { text: "The cost of silence accumulates.", audio: "/audio/inaction/cost-of-silence.mp3" },
+  { text: "Silence grows roots.", audio: "/audio/inaction/silence.mp3" },
+  { text: "Balance shifts unnoticed.", audio: "/audio/inaction/balance.mp3" },
+  { text: "Neglect compounds quietly.", audio: "/audio/inaction/neglect.mp3" },
+  { text: "Inaction is also a decision.", audio: "/audio/inaction/inaction.mp3" },
+  { text: "Small fractures widen.", audio: "/audio/inaction/smallfractureswiden.mp3" },
+  { text: "Nothing changes - until everything does.", audio: "/audio/inaction/nothingchanges.mp3" },
+  { text: "The fade has begun.", audio: "/audio/inaction/fadebegun.mp3" },
+  { text: "Quiet choices echo longest.", audio: "/audio/inaction/quietchoice.mp3"},
+  { text: "Stillness can be decay.", audio: "/audio/inaction/stillness.mp3" },
+  { text: "The cost of silence accumulates.", audio: "/audio/inaction/costofsilence.mp3" },
 ];
 
 // Action Phrases (random selection)
