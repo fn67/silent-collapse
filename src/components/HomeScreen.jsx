@@ -11,9 +11,10 @@ export default function HomeScreen({ onPlay, onAbout }) {
     >
       <div className="title-wrapper">
       <h1 className="title">{HOME_CONTENT.title}</h1>
-      <p className="game-subtitle">BY CLUB 18</p>
+      <p className="game-subtitle">{HOME_CONTENT.subtitle}</p>
       </div>
 
+      <p className="game-credit">{HOME_CONTENT.credit}</p>
 
       <p className="tagline mt-3" style={{ whiteSpace: "pre-line" }}>
         {HOME_CONTENT.tagline}

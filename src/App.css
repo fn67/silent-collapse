@@ -86,12 +86,21 @@ button:disabled {
 }
 
 .game-subtitle {
+  font-size: 1.5rem;
+  margin-right: 2px;
+  letter-spacing: 0.2em;
+  opacity: 0.8;
+  margin-bottom: 0;
+}
+.game-credit {
   font-size: 1rem;
   margin-right: 2px;
   letter-spacing: 0.2em;
   opacity: 0.5;
-  margin-bottom: 0;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
+
 
 .tagline {
   font-size: 1.1rem;
