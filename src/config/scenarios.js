@@ -65,16 +65,16 @@ export const SCENARIOS = [
 
 // Inaction Phrases (random selection)
 export const INACTION_PHRASES = [
-  // { text: "Silence grows roots.", audio: "/audio/inaction/silence.mp3" },
-  // { text: "Balance shifts unnoticed.", audio: "/audio/inaction/balance.mp3" },
-  // { text: "Neglect compounds quietly.", audio: "/audio/inaction/neglect.mp3" },
-  // { text: "Inaction is also a decision.", audio: "/audio/inaction/inaction.mp3" },
+  { text: "Silence grows roots.", audio: "/audio/inaction/silence.mp3" },
+  { text: "Balance shifts unnoticed.", audio: "/audio/inaction/balance.mp3" },
+  { text: "Neglect compounds quietly.", audio: "/audio/inaction/neglect.mp3" },
+  { text: "Inaction is also a decision.", audio: "/audio/inaction/inaction.mp3" },
   { text: "Small fractures widen.", audio: "/audio/inaction/smallfractures.mp3" },
-  // { text: "Nothing changes - until everything does.", audio: "/audio/inaction/nothingchanges.mp3" },
-  // { text: "The fade has begun.", audio: "/audio/inaction/fadebegun.mp3" },
-  // { text: "Quiet choices echo longest.", audio: "/audio/inaction/quietchoice.mp3"},
-  // { text: "Stillness can be decay.", audio: "/audio/inaction/stillness.mp3" },
-  // { text: "The cost of silence accumulates.", audio: "/audio/inaction/costofsilence.mp3" },
+  { text: "Nothing changes - until everything does.", audio: "/audio/inaction/nothingchanges.mp3" },
+  { text: "The fade has begun.", audio: "/audio/inaction/fadebegun.mp3" },
+  { text: "Quiet choices echo longest.", audio: "/audio/inaction/quietchoice.mp3"},
+  { text: "Stillness can be decay.", audio: "/audio/inaction/stillness.mp3" },
+  { text: "The cost of silence accumulates.", audio: "/audio/inaction/costofsilence.mp3" },
 ];
 
 // Action Phrases (random selection)
