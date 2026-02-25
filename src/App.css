@@ -179,15 +179,13 @@ button:disabled {
   position: absolute;
   top: 2rem;
   left: 2rem;
-  border: none;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
+
+}
+.back-button-bottom {
+  width: fit-content;
 }
 
-.back-button:hover {
-  border: none;
-  opacity: 0.7;
-}
+
 
 .about-content {
   display: flex;

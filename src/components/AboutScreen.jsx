@@ -9,7 +9,7 @@ export default function AboutScreen({ onBack }) {
       transition={{ duration: 2, ease: "easeInOut" }}
     >
       <button className="back-button" onClick={onBack}>
-        ← BACK
+        &lt; BACK
       </button>
 
       
@@ -55,6 +55,11 @@ export default function AboutScreen({ onBack }) {
     </div>
   
   </section>
+
+  <button  onClick={onBack} className="back-button-bottom">
+      &lt; BACK
+  </button>
+
 </div>
     </motion.div>
   )
